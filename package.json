@@ -8,9 +8,16 @@
     "dev": "node --watch server.mjs",
     "test": "node --test",
     "build": "node scripts/build-worker.mjs",
-    "validate:site": "node scripts/validate-worker.mjs"
+    "validate:site": "node scripts/validate-worker.mjs",
+    "db:generate": "drizzle-kit generate"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.44.6"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.5"
   }
 }

@@ -263,6 +263,40 @@ button { cursor: pointer; }
   line-height: 1.6;
 }
 
+.student-field {
+  display: grid;
+  gap: 7px;
+  max-width: 520px;
+  margin: 0 0 24px;
+}
+
+.student-field span {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.student-field input {
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+
+.student-field input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(65, 79, 166, 0.12);
+}
+
+.student-field small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .team-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

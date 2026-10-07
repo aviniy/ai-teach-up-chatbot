@@ -3,18 +3,24 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const [template, html, css, app, manifest] = await Promise.all([
+const [template, html, css, app, adminHtml, adminCss, adminApp, manifest] = await Promise.all([
   readFile(resolve(projectRoot, "worker/worker-template.js"), "utf8"),
   readFile(resolve(projectRoot, "public/index.html"), "utf8"),
   readFile(resolve(projectRoot, "public/styles.css"), "utf8"),
   readFile(resolve(projectRoot, "public/app.js"), "utf8"),
+  readFile(resolve(projectRoot, "public/admin.html"), "utf8"),
+  readFile(resolve(projectRoot, "public/admin.css"), "utf8"),
+  readFile(resolve(projectRoot, "public/admin.js"), "utf8"),
   readFile(resolve(projectRoot, ".openai/hosting.json"), "utf8")
 ]);
 
 const replacements = new Map([
   ["__INDEX_HTML_JSON__", JSON.stringify(html)],
   ["__STYLES_CSS_JSON__", JSON.stringify(css)],
-  ["__APP_JS_JSON__", JSON.stringify(app)]
+  ["__APP_JS_JSON__", JSON.stringify(app)],
+  ["__ADMIN_HTML_JSON__", JSON.stringify(adminHtml)],
+  ["__ADMIN_CSS_JSON__", JSON.stringify(adminCss)],
+  ["__ADMIN_JS_JSON__", JSON.stringify(adminApp)]
 ]);
 
 let output = template;

@@ -1,6 +1,7 @@
 const state = {
   sessionId: localStorage.getItem("ai-teach-up-session") || "",
   teamModes: [],
+  displayName: "",
   mode: null,
   stage: null,
   limits: { maxPromptChars: 60, maxTurns: 5, maxTotalChars: 300 },
@@ -28,7 +29,8 @@ const elements = {
   teamOptions: document.querySelector("#team-options"),
   teamTitle: document.querySelector("#rule-title"),
   teamDescription: document.querySelector("#team-description"),
-  stageSwitcher: document.querySelector("#stage-switcher")
+  stageSwitcher: document.querySelector("#stage-switcher"),
+  studentName: document.querySelector("#student-name")
 };
 
 const segmenter = new Intl.Segmenter("ko", { granularity: "grapheme" });
@@ -42,9 +44,11 @@ function selectedMode() {
 function applySession(data) {
   state.sessionId = data.sessionId;
   state.mode = data.mode;
+  state.displayName = data.displayName || "";
   state.limits = data.limits;
   state.usage = data.usage;
   localStorage.setItem("ai-teach-up-session", state.sessionId);
+  elements.studentName.value = state.displayName;
   const mode = selectedMode();
   if (mode && !mode.allowedStages.includes(state.stage)) state.stage = mode.allowedStages[0];
 }
@@ -79,6 +83,7 @@ function updateView() {
   const overPrompt = limits.maxPromptChars > 0 && promptLength > limits.maxPromptChars;
   const overTotal = limits.maxTotalChars > 0 && promptLength > usage.charsRemaining;
   const exhausted = limits.maxTurns > 0 && usage.turnsRemaining === 0;
+  const hasStudentName = Boolean(elements.studentName.value.trim());
 
   elements.teamChooser.hidden = hasMode;
   elements.messages.hidden = !hasMode;
@@ -97,6 +102,10 @@ function updateView() {
   elements.send.disabled = !hasMode || state.sending || !elements.prompt.value.trim() || overPrompt || overTotal || exhausted;
   elements.prompt.disabled = exhausted;
   elements.prompt.placeholder = exhausted ? "사용 가능 횟수를 모두 사용했습니다" : "필요한 도움과 확인할 조건을 적어 주세요";
+
+  for (const button of elements.teamOptions.querySelectorAll("button")) {
+    button.disabled = !hasStudentName;
+  }
 
   for (const button of elements.stageSwitcher.querySelectorAll("button")) {
     const allowed = mode?.allowedStages.includes(button.dataset.stage) ?? false;
@@ -154,7 +163,7 @@ async function configureTeam(mode) {
     const response = await fetch("/api/session/configure", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId: state.sessionId, mode })
+      body: JSON.stringify({ sessionId: state.sessionId, mode, displayName: elements.studentName.value.trim() })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data?.error?.message || "팀 조건을 설정하지 못했습니다.");
@@ -166,6 +175,7 @@ async function configureTeam(mode) {
     showNotice(error.message);
   } finally {
     elements.teamOptions.querySelectorAll("button").forEach((button) => (button.disabled = false));
+    updateView();
   }
 }
 
@@ -186,6 +196,17 @@ async function initialize() {
   updateView();
 }
 
+async function refreshUsage() {
+  if (!state.mode || state.sending || !state.sessionId) return;
+  try {
+    const response = await fetch(`/api/config?sessionId=${encodeURIComponent(state.sessionId)}`);
+    const data = await response.json();
+    if (!response.ok || !data.mode) return;
+    applySession(data);
+    updateView();
+  } catch {}
+}
+
 elements.stageSwitcher.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-stage]");
   if (!button || button.disabled) return;
@@ -194,6 +215,11 @@ elements.stageSwitcher.addEventListener("click", (event) => {
 });
 
 elements.prompt.addEventListener("input", () => {
+  showNotice("");
+  updateView();
+});
+
+elements.studentName.addEventListener("input", () => {
   showNotice("");
   updateView();
 });
@@ -269,4 +295,8 @@ document.querySelectorAll("[data-prompt]").forEach((button) => {
 });
 
 initialize();
+setInterval(refreshUsage, 15_000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") refreshUsage();
+});
 

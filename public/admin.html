@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>AI Teach-Up 관리자</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23282f69'/%3E%3Cpath d='M17 18h30v9H37v22H27V27H17z' fill='white'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="/admin.css?v=1" />
+  </head>
+  <body>
+    <main class="admin-shell">
+      <header class="admin-header">
+        <div><p>AI Teach-Up</p><h1>사용 관리</h1></div>
+        <div class="header-actions">
+          <button id="refresh" type="button" hidden>새로고침</button>
+          <button id="logout" type="button" hidden>로그아웃</button>
+        </div>
+      </header>
+
+      <section id="login-panel" class="login-panel">
+        <h2>관리자 로그인</h2>
+        <p id="login-message">관리자 비밀번호를 입력하세요.</p>
+        <form id="login-form">
+          <label for="password">비밀번호</label>
+          <input id="password" type="password" autocomplete="current-password" required />
+          <button type="submit">로그인</button>
+        </form>
+      </section>
+
+      <section id="dashboard" hidden>
+        <div class="summary-row">
+          <article><span>등록 학생</span><strong id="total-count">0</strong></article>
+          <article><span>오늘 활동</span><strong id="active-count">0</strong></article>
+          <label class="search-box">학생 찾기<input id="search" type="search" placeholder="이름·번호 검색" /></label>
+        </div>
+        <div id="notice" class="notice" role="status" hidden></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>학생</th><th>팀</th><th>사용량</th><th>추가 지급</th><th>관리</th><th>최근 활동</th></tr></thead>
+            <tbody id="session-list"></tbody>
+          </table>
+          <p id="empty" class="empty" hidden>아직 등록된 학생이 없습니다.</p>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/admin.js?v=1"></script>
+  </body>
+</html>
