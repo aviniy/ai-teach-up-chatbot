@@ -2,13 +2,27 @@ $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $runtime = Join-Path $projectRoot ".runtime"
 $runner = Join-Path $PSScriptRoot "run-console.ps1"
-$cloudflared = Join-Path $projectRoot ".local-tools\cloudflared.exe"
+$toolsDirectory = Join-Path $projectRoot ".local-tools"
+$cloudflared = Join-Path $toolsDirectory "cloudflared.exe"
 
 New-Item -ItemType Directory -Force -Path $runtime | Out-Null
 Remove-Item -LiteralPath (Join-Path $runtime "stopping.flag") -Force -ErrorAction SilentlyContinue
 
 if (-not (Test-Path -LiteralPath $cloudflared)) {
-  throw "cloudflared.exe is missing from the .local-tools folder."
+  New-Item -ItemType Directory -Force -Path $toolsDirectory | Out-Null
+  $architecture = if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") { "arm64" } else { "amd64" }
+  $downloadUrl = "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-$architecture.exe"
+  $downloadPath = Join-Path $toolsDirectory "cloudflared.download"
+
+  Write-Host "Downloading cloudflared from the official GitHub release..." -ForegroundColor Cyan
+  try {
+    Invoke-WebRequest -UseBasicParsing -Uri $downloadUrl -OutFile $downloadPath
+    Move-Item -LiteralPath $downloadPath -Destination $cloudflared -Force
+    & $cloudflared --version | Out-Host
+  } catch {
+    Remove-Item -LiteralPath $downloadPath -Force -ErrorAction SilentlyContinue
+    throw "Could not download cloudflared. Check the internet connection and try again."
+  }
 }
 
 function Test-RoleRunning([string]$role) {

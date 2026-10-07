@@ -17,17 +17,25 @@ AI Teach-Up 기획안의 제한형 대화 규칙을 반영한 수업용 챗봇�
 
 ## 실행
 
-Node.js 20 이상이 필요합니다.
-
-1. `.env.example`을 `.env`로 복사합니다.
-2. BAZE에서 발급한 API 키를 `BAZE_API_KEY`에 입력합니다.
-3. Gateway의 사용 가능 모델 ID를 확인하여 필요하면 `BAZE_MODEL`을 바꿉니다.
-4. 다음 명령을 실행합니다.
+Node.js 20 이상과 Git이 필요합니다. 저장소를 내려받은 뒤 프로젝트 폴더에서 설정합니다.
 
 ```powershell
-cd "C:\Users\aviniy\Documents\잡 프로젝트\ai-teach-up-chatbot"
+git clone https://github.com/aviniy/ai-teach-up-chatbot.git
+Set-Location ai-teach-up-chatbot
+npm install
 Copy-Item .env.example .env
-# .env에 실제 API 키를 입력한 뒤
+notepad .env
+```
+
+열린 `.env` 파일에서 다음 항목을 설정합니다.
+
+1. BAZE에서 발급한 API 키를 `BAZE_API_KEY`에 입력합니다.
+2. Gateway의 사용 가능 모델 ID를 확인하여 필요하면 `BAZE_MODEL`을 바꿉니다.
+3. `ADMIN_PASSWORD`를 원하는 관리자 비밀번호로 변경합니다.
+
+로컬에서만 실행하려면 다음 명령을 사용합니다.
+
+```powershell
 npm start
 ```
 
@@ -40,6 +48,8 @@ npm start
 - `AI-Teach-Up-START.bat`: 서버 로그 창과 외부 접속 주소 창을 각각 엽니다.
 - `AI-Teach-Up-STATUS.bat`: 현재 실행 상태, 학생용 주소, 관리자 주소를 확인합니다.
 - `AI-Teach-Up-STOP.bat`: 서버와 외부 접속 터널을 모두 종료합니다.
+
+첫 실행에는 공식 GitHub 릴리스에서 `cloudflared.exe`를 자동으로 내려받으므로 인터넷 연결이 필요합니다. 다운로드한 실행 파일과 로그는 Git에 포함되지 않습니다.
 
 명령줄에서는 아래 명령으로 동일하게 실행할 수 있습니다.
 
