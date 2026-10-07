@@ -33,6 +33,24 @@ npm start
 
 브라우저에서 `http://localhost:3210`을 엽니다.
 
+## 노트북에서 외부 공개
+
+프로젝트 폴더에 있는 아래 파일을 더블클릭하면 됩니다.
+
+- `AI-Teach-Up-START.bat`: 서버 로그 창과 외부 접속 주소 창을 각각 엽니다.
+- `AI-Teach-Up-STATUS.bat`: 현재 실행 상태, 학생용 주소, 관리자 주소를 확인합니다.
+- `AI-Teach-Up-STOP.bat`: 서버와 외부 접속 터널을 모두 종료합니다.
+
+명령줄에서는 아래 명령으로 동일하게 실행할 수 있습니다.
+
+```powershell
+npm run public
+```
+
+`AI Teach-Up - Public URL` 창에 표시되는 `https://...trycloudflare.com` 주소를 학생들에게 공유하세요. 이 주소는 실행할 때마다 바뀌며, 서버를 종료하거나 노트북이 절전·종료되면 접속할 수 없습니다. 관리자 페이지는 해당 주소 뒤에 `/admin`을 붙이면 됩니다.
+
+학생 사용 기록은 `data/sessions.json`에, 실행 로그는 `.runtime/server.log`와 `.runtime/tunnel.log`에 로컬 저장됩니다.
+
 ## 제한 설정
 
 `.env`에서 아래 값을 바꾸고 서버를 다시 시작합니다. `0`은 제한 없음입니다.

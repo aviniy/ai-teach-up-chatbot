@@ -9,7 +9,8 @@
     "test": "node --test",
     "build": "node scripts/build-worker.mjs",
     "validate:site": "node scripts/validate-worker.mjs",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "public": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-consoles.ps1"
   },
   "engines": {
     "node": ">=20"
