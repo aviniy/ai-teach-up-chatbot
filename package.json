@@ -1,0 +1,16 @@
+{
+  "name": "ai-teach-up-chatbot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "test": "node --test",
+    "build": "node scripts/build-worker.mjs",
+    "validate:site": "node scripts/validate-worker.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
